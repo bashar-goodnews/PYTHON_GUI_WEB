@@ -4,29 +4,88 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gui_mainpage</title>
+    <title>엑셀DB검색</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+img {
+    width: 300px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1><a href="main.html">GUI(feat.python)</a></h1> 
+<h1><a href="index.html">GUI(feat.python)</a></h1> 
+<div id="grid">
+    <ol>
+        <li><a href="바로가기.html">바로가기</a></li>
+        <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
+        <li><a href="구글시트연동.html">구글시트연동</a></li>
+        <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
+        <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
+        <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
+        <li><a href="특정위치클릭.html">특정위치클릭</a></li>
+        <li><a href="이메일자동발송.html">이메일자동발송</a></li>
+        <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
+        <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
+        <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
+        <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
+        <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
+        <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
+    </ol>
+    <div>
+        <h2>엑셀DB검색</h2>
+        <img src="엑셀DB검색.JPG">
 
-<ol>
-    <li><a href="바로가기.html">바로가기</a></li>
-    <li><a href="구글시트연동.html">구글시트연동</a></li>
-    <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
-    <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
-    <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
-    <li><a href="특정위치클릭.html">특정위치클릭</a></li>
-    <li><a href="이메일자동발송.html">이메일자동발송</a></li>
-    <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
-    <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
-    <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
-    <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
-    <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
-    <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
-</ol>
+        <h3>내부 함수</h3>
+        <pre>
+import pandas as pd
+from tabulate import tabulate
+from tkinter import ttk
+from tkinter import scrolledtext
 
-<p>해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</p>
+wbf ='site_db_new_v14.xlsx'
+data = pd.read_excel(wbf, sheet_name=[0,1], engine = "openpyxl")
 
+data[1]=data[1].applymap(str) #모든 데이터프레임에 데이터를 문자화하여 검색이 가능하도록 
+data[1]['내선']=data[1]['내선'].str.zfill(4) #데이터 앞에 0 붙이기
+
+def innerline():
+    datashow = data[1][data[1][chlb.get()].str.contains(str(s1.get()))] #문자로 검색
+    scr.delete(0.0, END)
+    scr.insert(INSERT,tabulate(datashow, headers='keys',showindex=False))
+    datashow.reset_index()
+        </pre>
+        <h3>외형</h3>
+        <pre>
+inline_tel=LabelFrame(tab3, text='내선 및 연락처 검색')
+inline_tel.grid(column=0, row=2, padx=8, pady=5)
+
+serch_objet=StringVar()
+
+chlb=ttk.Combobox(inline_tel, width=6, textvariable=serch_objet, state='readonly')
+chlb['values'] = ('부서', '이름', '내선', '연락처')
+chlb.grid(column=0, row=0,sticky='W')
+s1=Entry(inline_tel,width=15)
+s1.grid(column=1, row=0,sticky='W')
+
+b1 = Button(inline_tel,text="검색",width=12,command=innerline).grid(column=2, row=0,sticky='W')
+
+scr = scrolledtext.ScrolledText(inline_tel, width=44, height=20, wrap=WORD)
+scr.grid(column=0,columnspan=4)
+scr.config(font=("Consolas", 9))
+        </pre>
+
+    </div>    
+    <div id="link">
+      <a href="https://www.sscoaching.co.kr/ssc/index.coach" target="_blank"><img src="상상코칭.png"></a>
+      <a href="https://wawacenter.com/" target="_blank"><img src="와와.png"></a>
+      <a href="https://www.plcenter.co.kr/" target="_blank"><img src="파워잉글리시.JPG"></a>
+      <a href="http://www.sollute.co.kr/jsp/main.jsp" target="_blank"><img src="솔루트.png"></a>
+    </div>
+</div>
 </body>
 </html>

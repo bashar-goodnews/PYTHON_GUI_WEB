@@ -4,29 +4,231 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gui_mainpage</title>
+    <title>구글시트연동</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+img {
+    width: 800px;
+}
+.googleApl{
+    margin-bottom: 0px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1><a href="main.html">GUI(feat.python)</a></h1> 
+<h1><a href="index.html">GUI(feat.python)</a></h1> 
+<div id="grid">
+    <ol>
+        <li><a href="바로가기.html">바로가기</a></li>
+        <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
+        <li><a href="구글시트연동.html">구글시트연동</a></li>
+        <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
+        <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
+        <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
+        <li><a href="특정위치클릭.html">특정위치클릭</a></li>
+        <li><a href="이메일자동발송.html">이메일자동발송</a></li>
+        <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
+        <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
+        <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
+        <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
+        <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
+        <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
+    </ol>
+    <div>
+        <h2>구글시트연동</h2>
+        <img src="구글시트연동.JPG">
 
-<ol>
-    <li><a href="바로가기.html">바로가기</a></li>
-    <li><a href="구글시트연동.html">구글시트연동</a></li>
-    <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
-    <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
-    <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
-    <li><a href="특정위치클릭.html">특정위치클릭</a></li>
-    <li><a href="이메일자동발송.html">이메일자동발송</a></li>
-    <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
-    <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
-    <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
-    <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
-    <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
-    <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
-</ol>
+        <h3>구글드라이브 API</h3>
+        <h4 class="googleApl">-참고URL-</h4>
+        <a href="https://lucaseo.github.io/posts/2020-04-12-python-spreadsheet-gspread/" target="_blank">
+            https://lucaseo.github.io/posts/2020-04-12-python-spreadsheet-gspread/</a>
+        <h4>
+            #주요내용# </br>
+            1. 구글클라우드플랫폼 로그인 및 새 프로젝트 생성</br>
+            2. 구글클라우드플랫폼(GCP)에서 json파일 내려받아서 GUI 파일있는 폴더에 넣기</br>
+            3. 구글스프레드시트에 json파일의 메일 공유설정</br>
+        </h4>
+        
 
-<p>해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</p>
+        <h3>내부 함수</h3>
+        <pre>
+from oauth2client.service_account import ServiceAccountCredentials
+import gspread
+from openpyxl import load_workbook 
+import pandas as pd
+from tabulate import tabulate
+from tkinter import ttk
+from tkinter import messagebox
+from tkinter import scrolledtext
 
+wbf ='site_db_new_v14.xlsx'
+wb = load_workbook(wbf) # 경로는 꼭 "/"로
+
+sheet = wb['Sheet1'] #시트이름은 정확히
+sh_name = sheet['k4'].value 
+goo_jsfn = sheet['k6'].value
+
+creds_2 = ServiceAccountCredentials.from_json_keyfile_name(goo_jsfn, scope)
+client_2 = gspread.authorize(creds_1) #꼭! 해당 공유 시트에 json 파일의 메일주소를 공유해야 함
+spreadsheet_name_2 = sh_name
+
+spreadsheet_2 = client_2.open(spreadsheet_name_2)
+sheet_2 = spreadsheet_2.get_worksheet(0)
+col_name1=sheet_2.acell('B1').value
+col_name2=sheet_2.acell('C1').value
+col_name3=sheet_2.acell('D1').value
+col_name4=sheet_2.acell('E1').value
+col_name5=sheet_2.acell('F1').value
+col_name6=sheet_2.acell('G1').value
+cho_ind=sheet_2.col_values('9')
+cho_ind_1=cho_ind[1:]
+
+def apply_2(): #TAB3 등록
+    dt_to=datetime.today().strftime("%Y/%m/%d")
+    cu_id=gen_en1.get() #회원ID
+    cu_name=gen_en2.get() #회원이름
+    re_mo=gen_en3.get() #매출금액
+    co_id=gen_en4.get() #코치id
+    co_name=gen_en5.get() #코치이름
+    de_se=gen_en6.get() #사업부구분
+    
+    sheet_2.append_row([dt_to, cu_id, cu_name, re_mo, co_id, co_name, de_se], value_input_option="USER_ENTERED")
+    dfraw1_0=pd.DataFrame(sheet_2.get_values('a1:h'))
+    dfraw1_1=dfraw1_0.rename(columns=dfraw1_0.iloc[0]) #첫행을 키로
+    dfraw1_2=dfraw1_1.drop(dfraw1_1.index[0]) #첫행삭제
+    dfraw1=dfraw1_2.loc[::-1] #데이터프레임 역순
+            
+    gen_en1.delete(0, END)
+    gen_en4.delete(0, END)
+    gen_en5.delete(0, END)
+    gen_en6.delete(0, END)
+
+    gen_scr.delete(0.0, END)
+    gen_scr.insert(INSERT,tabulate(dfraw1, headers='keys',showindex=True))
+    dfraw1_0.reset_index() 
+
+def check_2(): #TAB3 검색
+    dfraw1_0=pd.DataFrame(sheet_2.get_values('a1:h'))
+    dfraw1_1=dfraw1_0.rename(columns=dfraw1_0.iloc[0]) #첫행을 키로
+    dfraw1_2=dfraw1_1.drop(dfraw1_1.index[0]) #첫행삭제
+    dfraw1=dfraw1_2.loc[::-1] #데이터프레임 역순
+    gen_scr.delete(0.0, END)
+    gen_scr.insert(INSERT,tabulate(dfraw1, headers='keys',showindex=True))
+    dfraw1_0.reset_index()
+
+def next_available_row_2():
+    str_list = list(filter(None, sheet_2.col_values(1))) #빈칸이 발생하지 않을 열을 선택해야 해야함
+    return len(str_list)
+
+def cancel_2(): #TAB3 삭제
+
+    res = messagebox.askquestion('주의', '정말 삭제하시겠습니까?')
+    if res == 'yes':
+        sheet_2.delete_rows(next_available_row_2())
+        dfraw1_0=pd.DataFrame(sheet_2.get_values('a1:h'))
+        dfraw1_1=dfraw1_0.rename(columns=dfraw1_0.iloc[0]) #첫행을 키로
+        dfraw1_2=dfraw1_1.drop(dfraw1_1.index[0]) #첫행삭제
+        dfraw1=dfraw1_2.loc[::-1] #데이터프레임 역순
+        
+        gen_scr.delete(0.0, END)
+        gen_scr.insert(INSERT,tabulate(dfraw1, headers='keys',showindex=True))
+        dfraw1_0.reset_index() 
+
+def serch_raw_2(): 
+    dfraw1_0=pd.DataFrame(sheet_2.get_values('a1:h'))
+    dfraw1_0_0=dfraw1_0.applymap(str)
+    dfraw1_1=dfraw1_0_0.rename(columns=dfraw1_0_0.iloc[0]) #첫행을 키로
+    dfraw1_1 = dfraw1_1[dfraw1_1[gen_ser1_en.get()].str.contains(str(gen_ser2_en.get()))]
+    dfraw11=dfraw1_1.loc[::-1]
+  
+    gen_scr.delete(0.0, END)
+    gen_scr.insert(INSERT,tabulate(dfraw11, headers='keys',showindex=True))
+    dfraw12=len(list(dfraw1_1[gen_ser1_en.get()]))
+    dfraw13=len(list(dfraw1_0[1]))-1
+
+    gen_ser3_en.delete(0, END)
+    gen_ser3_en.insert(0,dfraw12)
+    gen_ser4_en.delete(0, END)
+    gen_ser4_en.insert(0,dfraw13)
+    dfraw1_0.reset_index()
+        </pre>
+        <h3>외형</h3>
+        <pre>
+gen_master=LabelFrame(tab3, text=sh_name+' 검색')
+gen_master.grid(column=0, row=0, padx=8, pady=4)
+gen_ser1=Label(gen_master, text="key&\n검색어선택",height=2,width=8).grid(column=0, row=0,rowspan=2,sticky='w')
+
+gen_serch_objet2=StringVar()
+gen_ser1_en=ttk.Combobox(gen_master, width=13, textvariable=gen_serch_objet2, state='readonly')
+gen_ser1_en['values'] = (col_name1,col_name2,col_name3,col_name4,col_name5,col_name6)
+gen_ser1_en.grid(column=1,columnspan=2, row=0,sticky='W')
+
+gen_ser2_en=Entry(gen_master,width=13)
+gen_ser2_en.grid(column=1,columnspan=2, row=1,sticky='W')
+
+gen_ser3=Label(gen_master, text="검색C:",width=8).grid(column=0, row=2,sticky='w')
+gen_ser3_en=Entry(gen_master,width=9)
+gen_ser3_en.grid(column=1, row=2,sticky='W')
+
+gen_ser4=Label(gen_master, text="전체C:",width=6).grid(column=2, row=2,sticky='w')
+gen_ser4_en=Entry(gen_master,width=9)
+gen_ser4_en.grid(column=3, row=2,sticky='W')
+
+gen_ser_b_1 = Button(gen_master,text="검색",height=2,width=15,command=serch_raw_2).grid(column=3,row=0,rowspan=2,sticky='w')
+
+gen2_master=LabelFrame(tab3, text=sh_name)
+gen2_master.grid(column=1, row=0, padx=8, pady=4)
+gen_re1=Label(gen2_master, text=str(col_name1)+":",width=6).grid(column=0, row=0,sticky='w')
+gen_en1=Entry(gen2_master,width=9)
+gen_en1.grid(column=1, row=0,sticky='W')
+gen_re2=Label(gen2_master, text=str(col_name2)+":",width=8).grid(column=2, row=0,sticky='w')
+gen_en2=Entry(gen2_master,width=8)
+gen_en2.grid(column=3, row=0,sticky='W')
+gen_en2.insert(0, " ") # " " 사이에 초기값 설정 가능
+
+gen_re3=Label(gen2_master, text=str(col_name3)+":",width=10).grid(column=4, row=0,sticky='w')
+gen_en3=Entry(gen2_master,width=9)
+gen_en3.grid(column=5, row=0,sticky='W')
+gen_en3.insert(0, " ") # " " 사이에 초기값 설정 가능
+
+gen_re4=Label(gen2_master, text=str(col_name4)+":",width=6).grid(column=0, row=1,sticky='w')
+gen_en4=Entry(gen2_master,width=9)
+gen_en4.grid(column=1, row=1,sticky='W')
+gen_re5=Label(gen2_master, text=str(col_name5)+":",width=8).grid(column=2, row=1,sticky='w')
+gen_en5=Entry(gen2_master,width=8)
+gen_en5.grid(column=3, row=1,sticky='W')
+
+gen_re6=Label(gen2_master, text=str(col_name6)+":",width=10).grid(column=4, row=1,sticky='w')
+
+gen_serch_objet1=StringVar()
+gen_en6=ttk.Combobox(gen2_master, width=9, textvariable=gen_serch_objet1, state='readonly')
+gen_en6['values'] = (cho_ind_1) #I열 첫줄 key 두번째 이하 선택
+gen_en6.grid(column=5, row=1,sticky='W')
+
+gen_b1 = Button(gen2_master,text="확인",width=14,command=check_2).grid(column=0,columnspan=3, row=3,sticky='w')
+gen_b3 = Button(gen2_master,text="등록",width=23,command=apply_2).grid(column=2,columnspan=4, row=3,sticky='e')
+gen_b2 = Button(gen2_master,text="삭제",width=14,command=cancel_2).grid(column=2,columnspan=3, row=3,sticky='w')
+
+gen_moniter=LabelFrame(tab3, text='모니터')
+gen_moniter.grid(column=0,columnspan=2, row=2, padx=8, pady=5)
+
+gen_scr = scrolledtext.ScrolledText(gen_moniter, width=100, height=17, wrap=WORD)
+gen_scr.grid(column=0,columnspan=4)
+gen_scr.config(font=("Consolas", 9))
+        </pre>
+
+    </div>    
+    <div id="link">
+      <a href="https://www.sscoaching.co.kr/ssc/index.coach" target="_blank"><img src="상상코칭.png"></a>
+      <a href="https://wawacenter.com/" target="_blank"><img src="와와.png"></a>
+      <a href="https://www.plcenter.co.kr/" target="_blank"><img src="파워잉글리시.JPG"></a>
+      <a href="http://www.sollute.co.kr/jsp/main.jsp" target="_blank"><img src="솔루트.png"></a>
+    </div>
+</div>
 </body>
 </html>

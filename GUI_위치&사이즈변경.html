@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUI_위치&사이즈변경</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+img {
+    width: 400px;
+}
+
+
+</style>
+
+</head>
+<body>
+
+<h1><a href="index.html">GUI(feat.python)</a></h1> 
+<div id="grid">
+    <ol>
+        <li><a href="바로가기.html">바로가기</a></li>
+        <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
+        <li><a href="구글시트연동.html">구글시트연동</a></li>
+        <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
+        <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
+        <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
+        <li><a href="특정위치클릭.html">특정위치클릭</a></li>
+        <li><a href="이메일자동발송.html">이메일자동발송</a></li>
+        <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
+        <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
+        <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
+        <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
+        <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
+        <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
+    </ol>
+    <div>
+        <h2>GUI_위치&사이즈변경</h2>
+        <img src="GUI_사이즈_위치_변경.JPG">
+
+        <h3>위치&사이즈변경</h3>
+        <pre>
+
+from openpyxl import load_workbook           
+
+wbf ='db_gen_v5.xlsx'
+wb = load_workbook(wbf) # 경로는 꼭 "/"로
+wbs = wbf
+sheet = wb['login_size_position']
+
+sz_x = sheet['b7'].value
+sz_y = sheet['c7'].value
+pst_x = sheet['b8'].value
+pst_y = sheet['c8'].value
+
+
+def mSize(): # 사이즈
+    sheet['b7']=e2.get()
+    sheet['c7']=e3.get()
+    wb.save(wbs)
+    win.geometry(str(e2.get())+"x"+str(e3.get())+"+"+str(e4.get())+"+"+str(e5.get()))
+
+def autoSize(): 
+    sheet['b7']=win.winfo_width()
+    sheet['c7']=win.winfo_height()
+    wb.save(wbs)
+    win.geometry(str(win.winfo_width())+"x"+str(win.winfo_height())+"+"+str(e4.get())+"+"+str(e5.get()))
+    e2.delete(0,END)
+    e3.delete(0,END)
+    e2.insert(0,win.winfo_width())
+    e3.insert(0,win.winfo_height())
+
+
+def mPosition(): # 포지션
+    sheet['b8'] = e4.get()
+    sheet['c8'] = e5.get()
+    wb.save(wbs)
+    win.geometry(str(e2.get())+"x"+str(e3.get())+"+"+str(e4.get())+"+"+str(e5.get()))
+
+def autoPosition(): 
+    global pst_x,pst_y
+    pst_x,pst_y= pag.position()
+    print (pst_x,pst_y)
+    sheet['b8']=pst_x-252 
+    sheet['c8']=pst_y-556
+    wb.save(wbs)
+    win.geometry(str(e2.get())+"x"+str(e3.get())+"+"+str(pst_x-252)+"+"+str(pst_y-556))
+    e4.delete(0,END)
+    e5.delete(0,END)
+    e4.insert(0,pst_x-252)
+    e5.insert(0,pst_y-556)
+
+
+
+sipo_master=LabelFrame(tab2, text='size & position')
+sipo_master.grid(column=0, row=3, padx=8, pady=4)
+
+lbID=Label(sipo_master, text="사이즈:",width=7).grid(column=0, row=0,sticky='W')
+e2=Entry(sipo_master,width=7)
+e2.grid(column=1, row=0,sticky='W')
+e2.insert(0,sz_x)
+
+
+lbID2=Label(sipo_master, text="X",width=2).grid(column=2, row=0,sticky='W')
+e3=Entry(sipo_master,width=7)
+e3.grid(column=3, row=0,sticky='W')
+e3.insert(0,sz_y)
+
+lbID4=Label(sipo_master, text="",width=1).grid(column=4, row=0,sticky='W')
+b1 = Button(sipo_master,text="자동",width=8,command=autoSize).grid(column=5, row=0,sticky='W')
+b2 = Button(sipo_master,text="수동",width=8,command=mSize).grid(column=6, row=0,sticky='W')
+
+lbID1=Label(sipo_master, text="위치:",width=7).grid(column=0, row=1,sticky='W')
+e4=Entry(sipo_master,width=7)
+e4.grid(column=1, row=1,sticky='W')
+e4.insert(0,pst_x)
+
+lbID3=Label(sipo_master, text="X",width=2).grid(column=2, row=1,sticky='W')
+e5=Entry(sipo_master,width=7)
+e5.grid(column=3, row=1,sticky='W')
+e5.insert(0,pst_y)
+
+lbID5=Label(sipo_master, text="",width=1).grid(column=4, row=1,sticky='W')
+b3 = Button(sipo_master,text="자동",width=8,command=autoPosition).grid(column=5, row=1,sticky='W')
+b4 = Button(sipo_master,text="수동",width=8,command=mPosition).grid(column=6, row=1,sticky='W')
+        </pre>
+        
+
+    </div>    
+    <div id="link">
+      <a href="https://www.sscoaching.co.kr/ssc/index.coach" target="_blank"><img src="상상코칭.png"></a>
+      <a href="https://wawacenter.com/" target="_blank"><img src="와와.png"></a>
+      <a href="https://www.plcenter.co.kr/" target="_blank"><img src="파워잉글리시.JPG"></a>
+      <a href="http://www.sollute.co.kr/jsp/main.jsp" target="_blank"><img src="솔루트.png"></a>
+    </div>
+    
+</div>
+</body>
+</html>

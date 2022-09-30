@@ -4,29 +4,97 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gui_mainpage</title>
+    <title>이미지포맷확인</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+img {
+    width: 300px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1><a href="main.html">GUI(feat.python)</a></h1> 
+<h1><a href="index.html">GUI(feat.python)</a></h1> 
+<div id="grid">
+    <ol>
+        <li><a href="바로가기.html">바로가기</a></li>
+        <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
+        <li><a href="구글시트연동.html">구글시트연동</a></li>
+        <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
+        <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
+        <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
+        <li><a href="특정위치클릭.html">특정위치클릭</a></li>
+        <li><a href="이메일자동발송.html">이메일자동발송</a></li>
+        <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
+        <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
+        <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
+        <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
+        <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
+        <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
+    </ol>
+    <div>
+        <h2>이미지포맷확인</h2>
+        <img src="이미지포맷확인.JPG">
 
-<ol>
-    <li><a href="바로가기.html">바로가기</a></li>
-    <li><a href="구글시트연동.html">구글시트연동</a></li>
-    <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
-    <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
-    <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
-    <li><a href="특정위치클릭.html">특정위치클릭</a></li>
-    <li><a href="이메일자동발송.html">이메일자동발송</a></li>
-    <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
-    <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
-    <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
-    <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
-    <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
-    <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
-</ol>
+        <h3>코딩</h3>
+        <pre>
+import PIL.Image #이미지 
+from tkinter import *
+from tkinter import filedialog
+from tkinter import messagebox
 
-<p>해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</p>
+def choose():
+    file_name1 = filedialog.askopenfilename(initialdir='path', title='select file', 
+    filetypes=(('jpg files','*.jpg'),('png files','*.png'),('gif files','*.gif'),('bmp files','*.bmp'),('all files','*.*')))
+    global files
+    files=file_name1
+    if files == '':
+                messagebox.showwarning("경고", "파일을 추가 하세요")
+    input_entry.delete(0.0, END)
+    input_entry.insert(INSERT, files)
+    print(files)
 
+def check_file():
+    img = PIL.Image.open(files)
+    print_entry.delete(0.0, END)
+    print_entry.insert(INSERT, img.format)
+
+
+win = Tk()
+text= Text(win,wrap=WORD)
+
+win.geometry('340x140+0+0') 
+win.title('auto_work')
+
+ch_title=LabelFrame(win, text='image format check')
+ch_title.grid(column=0, row=1, padx=8, pady=5)
+
+chlb=Label(ch_title, text="파일선택:",width=8).grid(column=0, row=0,sticky='W')
+input_entry= Text(ch_title, height=2, width=35, wrap=WORD)
+input_entry.grid(column=1, row=0,sticky='W')
+lbID4=Label(ch_title, text="",width=1).grid(column=4, row=0,sticky='W')
+b1 = Button(ch_title,text="선택",width=16,command=choose).grid(column=1, row=1,sticky='W')
+b2 = Button(ch_title,text="확인",width=16,command=check_file).grid(column=1, row=1,sticky='E')
+
+lbID4=Label(ch_title, text="",width=1, height=1).grid(column=0, row=2,sticky='W')
+
+chlb=Label(ch_title, text="image format:",width=16).grid(column=1, row=3,sticky='W')
+print_entry= Text(ch_title, height=2, width=16, wrap=WORD)
+print_entry.grid(column=1, row=3,sticky='E')
+
+win.mainloop()
+        </pre>
+    </div>    
+    <div id="link">
+      <a href="https://www.sscoaching.co.kr/ssc/index.coach" target="_blank"><img src="상상코칭.png"></a>
+      <a href="https://wawacenter.com/" target="_blank"><img src="와와.png"></a>
+      <a href="https://www.plcenter.co.kr/" target="_blank"><img src="파워잉글리시.JPG"></a>
+      <a href="http://www.sollute.co.kr/jsp/main.jsp" target="_blank"><img src="솔루트.png"></a>
+    </div>
+</div>
 </body>
 </html>

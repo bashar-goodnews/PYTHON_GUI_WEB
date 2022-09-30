@@ -4,29 +4,169 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gui_mainpage</title>
+    <title>폴더내이미지순환</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+img {
+    width: 300px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1><a href="main.html">GUI(feat.python)</a></h1> 
+<h1><a href="index.html">GUI(feat.python)</a></h1> 
+<div id="grid">
+    <ol>
+        <li><a href="바로가기.html">바로가기</a></li>
+        <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
+        <li><a href="구글시트연동.html">구글시트연동</a></li>
+        <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
+        <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
+        <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
+        <li><a href="특정위치클릭.html">특정위치클릭</a></li>
+        <li><a href="이메일자동발송.html">이메일자동발송</a></li>
+        <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
+        <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
+        <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
+        <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
+        <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
+        <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
+    </ol>
+    <div>
+        <h2>폴더내이미지순환</h2>
+        <img src="폴더내이미지순환.JPG">
 
-<ol>
-    <li><a href="바로가기.html">바로가기</a></li>
-    <li><a href="구글시트연동.html">구글시트연동</a></li>
-    <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
-    <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
-    <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
-    <li><a href="특정위치클릭.html">특정위치클릭</a></li>
-    <li><a href="이메일자동발송.html">이메일자동발송</a></li>
-    <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
-    <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
-    <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
-    <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
-    <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
-    <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
-</ol>
+        <h3>코딩</h3>
+        <pre>
+from tkinter import *
+from PIL import ImageTk, Image
+from tkinter import messagebox
+from tkinter import filedialog
+import os
+import time
+from numpy.random import choice
 
-<p>해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</p>
+def choose():
+    global folder_choose
+    folder_choose = filedialog.askdirectory(initialdir='path', title='select folder')
+    
+    if folder_choose == '':
+                messagebox.showwarning("경고", "폴더를 선택하세요")
+    input_entry.delete(0.0, END)
+    input_entry.insert(INSERT, folder_choose) 
 
+
+WhileBreak = False
+
+def while_break():
+    global WhileBreak
+    WhileBreak = True
+    
+
+def show_xl():
+    radSel=radVar.get()
+    if radSel==1:
+        while True: 
+            image_files = os.listdir(folder_choose)
+            for image_file in image_files:
+                scr = Image.open(folder_choose +"/"+ image_file)
+                resize_scr1=scr.resize((int(scr.width / int(float(r2.get()))), int(scr.height / int(float(r2.get())))))
+                
+                Deathwing2=ImageTk.PhotoImage(resize_scr1)
+                
+                CanV=canv.create_image(10, 10, anchor=NW, image=Deathwing2)
+                canv.itemconfigure(CanV, image=Deathwing2)
+                canv.image_names = Deathwing2
+                canv.update()
+                
+                time.sleep(int(retime_entry.get()))    
+                global WhileBreak      
+                if WhileBreak:
+                    break       
+            if WhileBreak:
+                WhileBreak = False
+                break    
+
+
+
+    elif radSel==2:
+        while True:
+            image_files = os.listdir(folder_choose)
+            image_file = choice(image_files)
+            scr = Image.open(folder_choose +"/"+ image_file)
+            resize_scr1=scr.resize((int(scr.width / int(float(r2.get()))), int(scr.height / int(float(r2.get())))))
+            
+            Deathwing2=ImageTk.PhotoImage(resize_scr1)
+            
+            CanV=canv.create_image(10, 10, anchor=NW, image=Deathwing2)
+            canv.itemconfigure(CanV, image=Deathwing2)
+            canv.image_names = Deathwing2
+            canv.update()
+            
+            time.sleep(int(retime_entry.get()))
+            
+            if WhileBreak:
+                WhileBreak = False
+                break 
+    
+
+
+win = Tk()
+text= Text(win,wrap=WORD)
+
+win.geometry("350x600+1000+0") #340x250+3480+30
+win.title('circulation_image')
+ch_csvtoxl=LabelFrame(win, text='folder_selection')
+ch_csvtoxl.grid(column=0, columnspan=3, row=0, padx=8, pady=5)
+
+chlb=Label(ch_csvtoxl, text="폴더선택:",width=8).grid(column=0, row=0,sticky='W')
+input_entry= Text(ch_csvtoxl, height=2, width=35, wrap=WORD)
+input_entry.grid(column=1,columnspan=3, row=0,sticky='W')
+
+lbID4=Label(ch_csvtoxl, text="",width=1).grid(column=4, row=0,sticky='W')
+b1 = Button(ch_csvtoxl,text="선택",width=10, command=choose).grid(column=1, row=1,sticky='W')
+b2 = Button(ch_csvtoxl,text="시작",width=10, command=show_xl).grid(column=2, row=1,sticky='W')
+b3 = Button(ch_csvtoxl,text="중지",width=10, command=while_break).grid(column=3, row=1,sticky='E')
+
+repeat_time=LabelFrame(win, text='repeat_time')
+repeat_time.grid(column=1, row=1, padx=8, pady=5)
+retime=Label(repeat_time, text="초",width=3).grid(column=1, row=0,sticky='W')
+retime_entry= Entry(repeat_time, width=6)
+retime_entry.grid(column=0, row=0,sticky='E')
+
+radVar=IntVar()
+repeat_style=LabelFrame(win, text='repeat_style')
+repeat_style.grid(column=0, row=1, padx=8, pady=5)
+restyle1=Radiobutton(repeat_style, text="in order", variable=radVar, value=1).grid(column=0, row=0,sticky='W')
+restyle2=Radiobutton(repeat_style, text="random", variable=radVar, value=2).grid(column=0, row=1,sticky='W')
+
+resize_master=LabelFrame(win, text='resize_image')
+resize_master.grid(column=2, row=1, padx=3, pady=3)
+
+lbID=Label(resize_master, text="n=",width=3).grid(column=0, row=0,sticky='W')
+r2=Entry(resize_master,width=6)
+r2.grid(column=1, row=0,sticky='W')
+
+lbID4=Label(resize_master, text="(원본/n)",width=6).grid(column=1, row=1,sticky='W')
+
+can_vas=LabelFrame(win, text='image_show')
+can_vas.grid(column=0,columnspan=3, row=3, padx=8, pady=5)
+canv = Canvas(can_vas, width=300, height=400, bg='white')
+canv.pack(fill=BOTH,expand=YES)
+
+win.mainloop()
+        </pre>
+    </div>    
+    <div id="link">
+      <a href="https://www.sscoaching.co.kr/ssc/index.coach" target="_blank"><img src="상상코칭.png"></a>
+      <a href="https://wawacenter.com/" target="_blank"><img src="와와.png"></a>
+      <a href="https://www.plcenter.co.kr/" target="_blank"><img src="파워잉글리시.JPG"></a>
+      <a href="http://www.sollute.co.kr/jsp/main.jsp" target="_blank"><img src="솔루트.png"></a>
+    </div>
+</div>
 </body>
 </html>

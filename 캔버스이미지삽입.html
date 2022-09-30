@@ -4,29 +4,196 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gui_mainpage</title>
+    <title>캔버스이미지삽입</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+img {
+    width: 300px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1><a href="main.html">GUI(feat.python)</a></h1> 
+<h1><a href="index.html">GUI(feat.python)</a></h1> 
+<div id="grid">
+    <ol>
+        <li><a href="바로가기.html">바로가기</a></li>
+        <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
+        <li><a href="구글시트연동.html">구글시트연동</a></li>
+        <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
+        <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
+        <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
+        <li><a href="특정위치클릭.html">특정위치클릭</a></li>
+        <li><a href="이메일자동발송.html">이메일자동발송</a></li>
+        <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
+        <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
+        <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
+        <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
+        <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
+        <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
+    </ol>
+    <div>
+        <h2>캔버스이미지삽입</h2>
+        <img src="캔버스이미지삽입.JPG">
 
-<ol>
-    <li><a href="바로가기.html">바로가기</a></li>
-    <li><a href="구글시트연동.html">구글시트연동</a></li>
-    <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
-    <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
-    <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
-    <li><a href="특정위치클릭.html">특정위치클릭</a></li>
-    <li><a href="이메일자동발송.html">이메일자동발송</a></li>
-    <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
-    <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
-    <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
-    <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
-    <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
-    <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
-</ol>
+        <h3>내부 함수</h3>
+        <pre>
+from tkinter import *
+from PIL import ImageTk, Image
+from tkinter import filedialog
+from tkinter import messagebox
+from openpyxl import load_workbook
 
-<p>해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</p>
+wbf ='db_gen_v5.xlsx'
 
+wb = load_workbook(wbf) # 경로는 꼭 "/"로
+wbs = wbf
+
+sheet = wb['login_size_position'] #시트이름은 정확히
+
+csz_x = sheet['e7'].value
+csz_y = sheet['f7'].value
+
+res_r = sheet['b11'].value
+files_im_s="jpg 파일을 선택해 주세요!^^"
+files_im=sheet['b12'].value
+image_choice_n=sheet['b13'].value
+gui_open_n=sheet['b14'].value
+
+def choose_image():
+    global image_choice_n
+    image_choice_n+=1
+    sheet['b13']=image_choice_n
+    wb.save(wbs)
+    file_name1 = filedialog.askopenfilename(initialdir='path', title='select file', 
+    filetypes=(('Jpg Files', '*.jpg'),('PNG Files', '*.png'),('all files', '*.*')))
+    global files_im
+    files_im=file_name1
+    if files_im == '':
+             messagebox.showwarning("경고", "파일을 추가 하세요")
+    input_entry1.delete(0.0, END)
+    input_entry1.insert(INSERT,files_im)
+
+def change_image():
+    sheet['B12']=files_im
+    wb.save(wbs)
+    
+    scr1 = Image.open(str(files_im))
+    resize_scr1=scr1.resize((int(scr1.width / int(float(res_r))), int(scr1.height / int(float(res_r)))))
+    Deathwing3=ImageTk.PhotoImage(resize_scr1)
+    
+    
+    if image_choice_n==1:
+       CanV=canv.create_image(10, 10, anchor=NW, image=Deathwing3)
+       canv.image_names = Deathwing3
+    else:
+        canv.delete("all")
+        CanV=canv.create_image(10, 10, anchor=NW, image=Deathwing3)
+        canv.itemconfigure(CanV, image=Deathwing3)
+        canv.image_names = Deathwing3
+
+def canvas_size(): # 캔버스 사이즈
+
+    sheet['e7']=e6.get()
+    sheet['f7']=e7.get()
+    wb.save(wbs)
+    # canv = Canvas(fretext_master, width=e6.get(), height=e7.get(), bg='white')
+    canv.configure(width=e6.get(), height=e7.get(), bg='white')
+    canv.pack(fill=BOTH,expand=YES)
+
+def image_size(): # 이미지사이즈
+    sheet['B11']=r2.get()
+    wb.save(wbs)
+    
+    scr1 = Image.open(str(files_im))
+    resize_scr1=scr1.resize((int(scr1.width / int(float(r2.get()))), int(scr1.height / int(float(r2.get())))))
+    Deathwing3=ImageTk.PhotoImage(resize_scr1)
+    
+    if image_choice_n==1:
+       CanV=canv.create_image(10, 10, anchor=NW, image=Deathwing3)
+       canv.image_names = Deathwing3
+    else:
+        canv.delete("all")
+        CanV=canv.create_image(10, 10, anchor=NW, image=Deathwing3)
+        canv.itemconfigure(CanV, image=Deathwing3)
+        canv.image_names = Deathwing3
+        </pre>
+        <h3>외형</h3>
+        <pre>
+fretext_master=LabelFrame(tab2, text='SecretCard')
+fretext_master.grid(column=0, row=0, padx=8, pady=4)
+canv = Canvas(fretext_master, width=csz_x, height=csz_y, bg='white')
+canv.pack(fill=BOTH,expand=YES)
+
+gui_open_n+=1
+sheet['b14']=gui_open_n
+wb.save(wbs)
+
+if image_choice_n==0:
+    pass
+else:
+    scr = Image.open(str(files_im))
+    resize_scr=scr.resize((int(scr.width / int(float(res_r))), int(scr.height / int(float(res_r)))))
+    Deathwing3=ImageTk.PhotoImage(resize_scr)
+    CanV=canv.create_image(10, 10, anchor=NW, image=Deathwing3)
+
+ser_canvas_image_size=LabelFrame(tab2, text='canvas size')
+ser_canvas_image_size.grid(column=0, row=1, padx=8, pady=5)
+
+lbID=Label(ser_canvas_image_size, text="사이즈:",width=7).grid(column=0, row=0,sticky='W')
+e6=Entry(ser_canvas_image_size,width=7)
+e6.grid(column=1, row=0,sticky='W')
+e6.insert(0,csz_x)
+
+lbID2=Label(ser_canvas_image_size, text="X",width=2).grid(column=2, row=0,sticky='W')
+e7=Entry(ser_canvas_image_size,width=7)
+e7.grid(column=3, row=0,sticky='W')
+e7.insert(0,csz_y)
+
+lbID4=Label(ser_canvas_image_size, text="",width=1).grid(column=4, row=0,sticky='W')
+b1 = Button(ser_canvas_image_size,text="변경",width=8,command=canvas_size).grid(column=5, row=0,sticky='W')
+
+
+ser_file=LabelFrame(tab2, text='change image')
+ser_file.grid(column=0, row=2, padx=8, pady=5)
+
+chlb=Label(ser_file, text="파일선택:",width=8).grid(column=0, row=0,sticky='W')
+input_entry1= Text(ser_file, height=2, width=34, wrap=WORD)
+input_entry1.grid(column=1,columnspan=3, row=0,sticky='W')
+
+if image_choice_n==0:
+    input_entry1.insert(INSERT,files_im_s)
+else:
+    input_entry1.insert(INSERT,files_im)
+
+
+lbID4=Label(ser_file, text="",width=1).grid(column=4, row=0,sticky='W')
+b1 = Button(ser_file,text="선택",height=2,width=9,command=choose_image).grid(column=2, row=1,sticky='E')
+b2 = Button(ser_file,text="변경",height=2,width=9,command=change_image).grid(column=3, row=1,sticky='E')
+
+
+resize_master=LabelFrame(ser_file, text='resize_image')
+resize_master.grid(columnspan=2, row=1, padx=3, pady=3)
+
+lbID=Label(resize_master, text="조정\n(원본/n)",width=7).grid(column=0, row=0,sticky='W')
+r2=Entry(resize_master,width=4)
+r2.grid(column=1, row=0,sticky='W')
+r2.insert(0,res_r)
+lbID4=Label(resize_master, text="",width=1).grid(column=2, row=0,sticky='W')
+b1 = Button(resize_master,text="수정",width=7,command=image_size).grid(column=3, row=0,sticky='W')
+        </pre>
+
+    </div>    
+    <div id="link">
+      <a href="https://www.sscoaching.co.kr/ssc/index.coach" target="_blank"><img src="상상코칭.png"></a>
+      <a href="https://wawacenter.com/" target="_blank"><img src="와와.png"></a>
+      <a href="https://www.plcenter.co.kr/" target="_blank"><img src="파워잉글리시.JPG"></a>
+      <a href="http://www.sollute.co.kr/jsp/main.jsp" target="_blank"><img src="솔루트.png"></a>
+    </div>
+</div>
 </body>
 </html>

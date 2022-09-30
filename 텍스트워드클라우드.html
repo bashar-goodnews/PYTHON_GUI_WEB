@@ -4,29 +4,358 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gui_mainpage</title>
+    <title>텍스트워드클라우드</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+img {
+    width: 700px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1><a href="main.html">GUI(feat.python)</a></h1> 
+<h1><a href="index.html">GUI(feat.python)</a></h1> 
+<div id="grid">
+    <ol>
+        <li><a href="바로가기.html">바로가기</a></li>
+        <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
+        <li><a href="구글시트연동.html">구글시트연동</a></li>
+        <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
+        <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
+        <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
+        <li><a href="특정위치클릭.html">특정위치클릭</a></li>
+        <li><a href="이메일자동발송.html">이메일자동발송</a></li>
+        <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
+        <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
+        <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
+        <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
+        <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
+        <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
+    </ol>
+    <div>
+        <h2>텍스트워드클라우드</h2>
+        <img src="텍스트워드클라우드.JPG">
 
-<ol>
-    <li><a href="바로가기.html">바로가기</a></li>
-    <li><a href="구글시트연동.html">구글시트연동</a></li>
-    <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
-    <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
-    <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
-    <li><a href="특정위치클릭.html">특정위치클릭</a></li>
-    <li><a href="이메일자동발송.html">이메일자동발송</a></li>
-    <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
-    <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
-    <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
-    <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
-    <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
-    <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
-</ol>
+        <h3>코딩</h3>
+        <pre>
+from datetime import datetime
+from tkinter import *
+from tkinter import messagebox
+from tkinter import filedialog
+import re
+import konlpy
+import pandas as pd
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from PIL import ImageTk, Image
+from io import BytesIO
+import numpy as np
 
-<p>해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</p>
 
+def choose():
+    file_name1 = filedialog.askopenfilename(initialdir='path', title='select file', 
+    filetypes=(('Txt Files', '*.txt'),('all files', '*.*')))
+    global files_im
+    files_im=file_name1
+    if files_im == '':
+                messagebox.showwarning("경고", "파일을 추가 하세요")
+    input_entry.delete(0.0, END)
+    input_entry.insert(INSERT,files_im)
+    
+
+def show_st():
+    scr = open(files_im,encoding='utf-8').read()
+    scr = re.sub('[^가-힣]',' ',scr)
+    hannanum = konlpy.tag.Hannanum()
+    nouns=hannanum.nouns(scr)
+    df_word=pd.DataFrame({'word':nouns})
+    df_word['count']=df_word['word'].str.len()
+    df_word=df_word.query('count>=2')
+    df_word.sort_values('count')
+    df_word=df_word.groupby('word', as_index=False) \
+                    .agg(n=('word','count')) \
+                    .sort_values('n', ascending=False)
+
+    dic_word=df_word.set_index('word').to_dict()['n']
+
+    radSel=radVar.get()
+    if radSel==1:
+        font='NanumGothicLight.ttf'
+    elif radSel==2:
+        font='KOTRA_BOLD.ttf'
+
+    radSel2=radVar3.get()
+
+    if radSel2 ==0 :
+
+        radSel1=radVar1.get()
+        if radSel1==1:
+            wc=WordCloud(random_state=1234,
+                        font_path=font,
+                        width=600,
+                        height=400,
+                        background_color='white')
+        elif radSel1==2:
+            wc=WordCloud(random_state=1234,
+                            font_path=font,
+                            width=600,
+                            height=400,
+                            background_color='white',
+                            colormap='inferno')
+        
+    else:
+        
+        if radSel2==1:
+            files_im1='구름.PNG'
+        elif radSel2==2:
+            files_im1='하트.PNG'
+        elif radSel2==3:
+            files_im1='별.PNG'
+        elif radSel2==4:
+            files_im1='고래.PNG'
+        elif radSel2==5:
+            files_im1='나무.PNG'
+
+        icon=Image.open(files_im1)
+        img_1=Image.new('RGB', icon.size, (255,255,255))
+        img_1.paste(icon,icon)
+        img_1=np.array(img_1)
+
+        
+        radSel1=radVar1.get()
+        if radSel1==1:
+            wc=WordCloud(random_state=1234,
+                        font_path=font,
+                        width=600,
+                        height=400,
+                        background_color='white',
+                        mask=img_1)
+        elif radSel1==2:
+            wc=WordCloud(random_state=1234,
+                            font_path=font,
+                            width=600,
+                            height=400,
+                            background_color='white',
+                            mask=img_1,
+                            colormap='inferno')
+
+
+    img_wordcloud=wc.generate_from_frequencies(dic_word)
+    
+    plt.rcParams.update({'font.family':'Malgun Gothic',
+                    'figure.dpi':'100',
+                    'figure.figsize' : [6,4]})
+    plt.Figure(figsize=(6,4))
+    plt.axis('off')
+    plt.imshow(img_wordcloud)
+
+
+    img_data = BytesIO()
+    plt.savefig(img_data)
+
+    load = Image.open(img_data)
+    render = ImageTk.PhotoImage(load)
+    canv.create_image(1, 1, anchor=NW, image=render)
+    
+
+def show_st1():
+    scr=input_entry2.get()
+    scr = re.sub('[^가-힣]',' ',scr)
+    hannanum = konlpy.tag.Hannanum()
+    nouns=hannanum.nouns(scr)
+    df_word=pd.DataFrame({'word':nouns})
+    df_word['count']=df_word['word'].str.len()
+    df_word=df_word.query('count>=2')
+    df_word.sort_values('count')
+    df_word=df_word.groupby('word', as_index=False) \
+                    .agg(n=('word','count')) \
+                    .sort_values('n', ascending=False)
+
+    dic_word=df_word.set_index('word').to_dict()['n']
+
+    radSel=radVar.get()
+    if radSel==1:
+        font='NanumGothicLight.ttf'
+    elif radSel==2:
+        font='KOTRA_BOLD.ttf'
+
+    radSel2=radVar3.get()
+
+    if radSel2 ==0 :
+
+        radSel1=radVar1.get()
+        if radSel1==1:
+            wc=WordCloud(random_state=1234,
+                        font_path=font,
+                        width=600,
+                        height=400,
+                        background_color='white')
+        elif radSel1==2:
+            wc=WordCloud(random_state=1234,
+                            font_path=font,
+                            width=600,
+                            height=400,
+                            background_color='white',
+                            colormap='inferno')
+        
+    else:
+        radSel2=radVar3.get()
+
+        if radSel2==1:
+            files_im1='구름.PNG'
+        elif radSel2==2:
+            files_im1='하트.PNG'
+        elif radSel2==3:
+            files_im1='별.PNG'
+        elif radSel2==4:
+            files_im1='고래.PNG'
+        elif radSel2==5:
+            files_im1='나무.PNG'
+
+        icon=Image.open(files_im1)
+        global img_1
+        img_1=Image.new('RGB', icon.size, (255,255,255))
+        img_1.paste(icon,icon)
+        img_1=np.array(img_1)
+
+
+        radSel1=radVar1.get()
+        if radSel1==1:
+            wc=WordCloud(random_state=1234,
+                        font_path=font,
+                        width=600,
+                        height=400,
+                        background_color='white',
+                        mask=img_1)
+        elif radSel1==2:
+            wc=WordCloud(random_state=1234,
+                            font_path=font,
+                            width=600,
+                            height=400,
+                            background_color='white',
+                            mask=img_1,
+                            colormap='inferno')
+
+
+    img_wordcloud=wc.generate_from_frequencies(dic_word)
+    
+    plt.rcParams.update({'font.family':'Malgun Gothic',
+                    'figure.dpi':'100',
+                    'figure.figsize' : [6,4]})
+    plt.Figure(figsize=(6,4))
+    plt.axis('off')
+    plt.imshow(img_wordcloud)
+
+
+    img_data = BytesIO()
+    plt.savefig(img_data)
+
+    load = Image.open(img_data)
+    render = ImageTk.PhotoImage(load)
+    canv.create_image(1, 1, anchor=NW, image=render)
+
+
+def imsave():
+    try:
+        new_filesname=files_im[:-4]+'.jpg'
+        
+    except:
+        date_t=datetime.now()
+        date_t1=str(date_t).replace(':','-')
+        date_t2=date_t1.replace(' ','')
+        new_filesname=str(date_t2)+'.jpg'
+
+    plt.savefig(new_filesname)
+    messagebox.showinfo("변경완료", "확인해 보세요")   
+
+
+def show_save():
+    plt.show()
+
+
+def select_cancle():
+    radVar3.set(0)
+
+win = Tk()
+text= Text(win,wrap=WORD)
+win.geometry("640x660+800+0") #340x250+3480+30
+win.title('cloud_words')
+
+ch_csvtoxl=LabelFrame(win, text='word_file_select')
+ch_csvtoxl.grid(column=0, row=0, padx=8, pady=5)
+
+chlb=Label(ch_csvtoxl, text="파일선택:",width=8).grid(column=0, row=0,sticky='W')
+input_entry= Text(ch_csvtoxl, height=2, width=30, wrap=WORD)
+input_entry.grid(column=1,columnspan=2, row=0,sticky='W')
+
+lbID4=Label(ch_csvtoxl, text="",width=1).grid(column=3, row=0,sticky='W')
+b1 = Button(ch_csvtoxl,text="검색",width=13, command=choose).grid(column=1, row=1,sticky='W')
+b2 = Button(ch_csvtoxl,text="변환",width=13, command=show_st).grid(column=2, row=1,sticky='W')
+
+
+ch1_csvtoxl=LabelFrame(win, text='style_select')
+ch1_csvtoxl.grid(column=1, row=0, rowspan=2, padx=8, pady=5)
+
+radVar3=IntVar()
+repeat2_style=LabelFrame(ch1_csvtoxl, text='mask_style')
+repeat2_style.grid(column=0, columnspan=2,row=0 ,padx=8, pady=5)
+restyle5=Radiobutton(repeat2_style, text="구름", variable=radVar3, value=1).grid(column=0, row=0,sticky='W')
+restyle6=Radiobutton(repeat2_style, text="하트", variable=radVar3, value=2).grid(column=1, row=0,sticky='W')
+restyle7=Radiobutton(repeat2_style, text="별", variable=radVar3, value=3).grid(column=2, row=0,sticky='W')
+restyle8=Radiobutton(repeat2_style, text="고래", variable=radVar3, value=4).grid(column=3, row=0,sticky='W')
+restyle9=Radiobutton(repeat2_style, text="나무", variable=radVar3, value=5).grid(column=4, row=0,sticky='W')
+b8 = Button(repeat2_style,text="삭제",height=1, width=3, command=select_cancle).grid(column=5, row=0)
+
+
+radVar=IntVar()
+repeat_style=LabelFrame(ch1_csvtoxl, text='text_style')
+repeat_style.grid(column=0, row=1, padx=8, pady=5)
+restyle1=Radiobutton(repeat_style, text="thin", variable=radVar, value=1).grid(column=0, row=0,sticky='W')
+restyle2=Radiobutton(repeat_style, text="bold", variable=radVar, value=2).grid(column=1, row=0,sticky='W')
+radVar.set(1)
+
+radVar1=IntVar()
+repeat_style1=LabelFrame(ch1_csvtoxl, text='color_style')
+repeat_style1.grid(column=1, row=1, padx=8, pady=5)
+restyle3=Radiobutton(repeat_style1, text="basic", variable=radVar1, value=1).grid(column=0, row=0,sticky='W')
+restyle4=Radiobutton(repeat_style1, text="inferno", variable=radVar1, value=2).grid(column=1, row=0,sticky='W')
+radVar1.set(1)
+
+ch2_csvtoxl=LabelFrame(win, text='word_insert')
+ch2_csvtoxl.grid(column=0, row=1, rowspan=2, padx=8, pady=5)
+
+chlb=Label(ch2_csvtoxl, text="text:",width=8).grid(column=0, row=0,sticky='W')
+input_entry2=Entry(ch2_csvtoxl, width=30)
+input_entry2.grid(column=1, columnspan=2, row=0,sticky='W',ipady=15)
+
+lbID4=Label(ch2_csvtoxl, text="",width=1).grid(column=3, row=0,sticky='W')
+b5 = Button(ch2_csvtoxl,text="변환",width=29, command=show_st1).grid(column=1,columnspan=2, row=1,sticky='W')
+
+ch3_csvtoxl=LabelFrame(win, text='save')
+ch3_csvtoxl.grid(column=1, row=2, padx=8, pady=5)
+b6 = Button(ch3_csvtoxl,text="저장_image_show",height=1, width=20, command=imsave).grid(column=0, row=0)
+b7 = Button(ch3_csvtoxl,text="저장_other_save",height=1, width=20, command=show_save).grid(column=1, row=0)
+
+
+can_vas=LabelFrame(win, text='image_show')
+can_vas.grid(column=0,columnspan=3, row=3, padx=8, pady=5)
+
+canv = Canvas(can_vas, width=600, height=400, bg='white')
+canv.pack(fill=BOTH,expand=YES)
+
+win.mainloop()
+        </pre>
+    </div>    
+    <div id="link">
+      <a href="https://www.sscoaching.co.kr/ssc/index.coach" target="_blank"><img src="상상코칭.png"></a>
+      <a href="https://wawacenter.com/" target="_blank"><img src="와와.png"></a>
+      <a href="https://www.plcenter.co.kr/" target="_blank"><img src="파워잉글리시.JPG"></a>
+      <a href="http://www.sollute.co.kr/jsp/main.jsp" target="_blank"><img src="솔루트.png"></a>
+    </div>
+</div>
 </body>
 </html>

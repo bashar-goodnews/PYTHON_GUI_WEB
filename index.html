@@ -5,13 +5,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gui_mainpage</title>
+
+<style>
+h1 { 
+    font-size: 50px;
+    margin: 0;
+    padding-bottom: 15px;
+    text-align: center;
+    border-bottom: 1px solid gray;
+    
+    /* padding-bottom: 5px; */
+}
+
+h4 { 
+    text-align: left;
+    margin: 0;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-bottom: 5px;
+    
+}
+
+ol {
+    padding-left: 50px;
+    padding-bottom: 30px;
+    width: 200px;
+    grid-template-columns: 300px 1fr;
+}
+
+li {
+    padding: 5PX;
+
+}
+
+body {
+    margin: 0;
+    /* background-image: linear-gradient(rgba(0, 0, 255, 0.5), rgba(255, 255, 0, 0.5)),
+                  url("사이트_파일_바로가기_gen_V2_1.JPG"); */
+                  
+
+}
+.images div{width: 25%; float: left;}
+.images img{width: 100%;padding: 10px 10px; box-sizing: border-box;}
+
+#grid{
+display: grid;
+grid-template-columns: 300px 1fr; 
+}
+
+</style>
+
+
 </head>
 <body>
 
-<h1><a href="index.html">GUI(feat.python)</a></h1> 
-
+<h1><a href="index.html">GUI(feat.python)</a></h1>
+<h4># 해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</h4> 
+<div id="grid">
 <ol>
     <li><a href="바로가기.html">바로가기</a></li>
+    <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
     <li><a href="구글시트연동.html">구글시트연동</a></li>
     <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
     <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
@@ -26,7 +79,31 @@
     <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
 </ol>
 
-<p>해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</p>
 
+<div class="images">
+    <div>
+        <a href="바로가기.html"><img src="사이트_파일_바로가기_gen_V2_1.jpg"></a>
+        <a href="GUI_위치&사이즈변경.html"><img src="GUI_사이즈_위치_변경.JPG"></a>
+        <a href="구글시트연동.html"><img src="구글시트연동.JPG"></a>
+        <a href="텍스트워드클라우드.html"><img src="텍스트워드클라우드.JPG"></a>
+    </div>
+    <div>
+        <a href="엑셀DB검색.html"><img src="엑셀DB검색.JPG"></a>
+        <a href="캔버스이미지삽입.html"><img src="캔버스이미지삽입.JPG"></a>
+        <a href="텍스트워드분석.html"><img src="텍스트워드분석.JPG"></a>
+    </div>
+    <div>
+        <a href="이미지포맷확인.html"><img src="이미지포맷확인.JPG"></a>
+        <a href="특정위치클릭.html"><img src="특정위치클릭.JPG"></a>
+        <a href="이메일자동발송.html"><img src="이메일자동발송.png"></a>
+        <a href="CSV파일_xlsx파일변환.html"><img src="CSV파일_xlsx파일변환.JPG"></a>
+        <a href="PDF파일_JPG파일변환.html"><img src="PDF파일_JPG파일변환.JPG"></a>
+    </div>
+    <div>
+        <a href="엑셀DB순환.html"><img src="엑셀DB순환.JPG"></a>
+        <a href="폴더내이미지순환.html"><img src="폴더내이미지순환.JPG"></a>
+    </div>
+</div>
+</div>
 </body>
 </html>

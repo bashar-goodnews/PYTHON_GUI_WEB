@@ -4,29 +4,500 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gui_mainpage</title>
+    <title>이메일자동발송</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+img {
+    width: 300px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1><a href="main.html">GUI(feat.python)</a></h1> 
+<h1><a href="index.html">GUI(feat.python)</a></h1> 
+<div id="grid">
+    <ol>
+        <li><a href="바로가기.html">바로가기</a></li>
+        <li><a href="GUI_위치&사이즈변경.html">GUI_위치&사이즈변경</a></li>
+        <li><a href="구글시트연동.html">구글시트연동</a></li>
+        <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
+        <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
+        <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
+        <li><a href="특정위치클릭.html">특정위치클릭</a></li>
+        <li><a href="이메일자동발송.html">이메일자동발송</a></li>
+        <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
+        <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
+        <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
+        <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
+        <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
+        <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
+    </ol>
+    <div>
+        <h2>이메일자동발송</h2>
+        <img src="이메일자동발송.png">
 
-<ol>
-    <li><a href="바로가기.html">바로가기</a></li>
-    <li><a href="구글시트연동.html">구글시트연동</a></li>
-    <li><a href="엑셀DB검색.html">엑셀DB검색</a></li>
-    <li><a href="캔버스이미지삽입.html">캔버스이미지삽입</a></li>
-    <li><a href="이미지포맷확인.html">이미지포맷확인</a></li>
-    <li><a href="특정위치클릭.html">특정위치클릭</a></li>
-    <li><a href="이메일자동발송.html">이메일자동발송</a></li>
-    <li><a href="엑셀DB순환.html">엑셀DB순환</a></li>
-    <li><a href="폴더내이미지순환.html">폴더내이미지순환</a></li>
-    <li><a href="텍스트워드클라우드.html">텍스트워드클라우드</a></li>
-    <li><a href="텍스트워드분석.html">텍스트워드분석</a></li>
-    <li><a href="CSV파일_xlsx파일변환.html">CSV파일_xlsx파일변환</a></li>
-    <li><a href="PDF파일_JPG파일변환.html">PDF파일_JPG파일변환</a></li>     
-</ol>
+        <h3>코딩</h3>
+        <pre>
+from datetime import datetime
+from email import charset
+from tkinter import *
+from tkinter import filedialog
+from tkinter import messagebox
+from tkinter.ttk import Notebook
+from tkinter import ttk
+import pyautogui as pag
+import time
+from openpyxl import load_workbook
+import openpyxl as xl
+import smtplib
+from os.path import basename
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart #파일첨부
+from email.mime.text import MIMEText
+from email.encoders import encode_base64 # 한글깨짐 방지 제목 및 내용에서
+from email.header import Header #제목에 한글깨짐 방지
 
-<p>해당 버튼을 누르면 해당 기능이 구현된 이미지와 관련 코드 페이지로 이동합니다.</p>
 
+wbf ='db_gen_mail_send_v3.xlsx'
+
+wb = load_workbook(wbf) # 경로는 꼭 "/"로
+wbs = wbf
+
+sheet = wb['gui_size_position'] #시트이름은 정확히
+sheet_mail_log = wb['mail_log']
+
+sz_x = sheet['b1'].value
+sz_y = sheet['c1'].value
+pst_x = sheet['b2'].value
+pst_y = sheet['c2'].value
+
+gmail_ID = sheet['b3'].value
+gmail_SN = sheet['b4'].value
+
+subjet_num = sheet['b5'].value
+contents_num = sheet['b6'].value
+
+
+def manu_size(): # 수동사이즈
+    
+    sheet['b1']=e2.get()
+    sheet['c1']=e3.get()
+    wb.save(wbs)
+    win.geometry(str(e2.get())+"x"+str(e3.get())+"+"+str(e4.get())+"+"+str(e5.get()))
+    
+
+def auto_size(): # 자동사이즈
+    
+    sheet['b1']=win.winfo_width()
+    sheet['c1']=win.winfo_height()
+    wb.save(wbs)
+    win.geometry(str(win.winfo_width())+"x"+str(win.winfo_height())+"+"+str(e4.get())+"+"+str(e5.get()))
+    e2.delete(0,END)
+    e3.delete(0,END)
+    e2.insert(0,win.winfo_width())
+    e3.insert(0,win.winfo_height())
+    
+    
+def manu_position(): # 수동포지션
+    
+    sheet['b2'] = e4.get()
+    sheet['c2']= e5.get()
+    wb.save(wbs)
+    win.geometry(str(e2.get())+"x"+str(e3.get())+"+"+str(e4.get())+"+"+str(e5.get()))
+    
+
+def auto_position(): # 자동포지션
+    global pst_x,pst_y
+    pst_x,pst_y= pag.position()
+    print (pst_x,pst_y)
+    sheet['b2']=pst_x-240
+    sheet['c2']=pst_y-113
+    wb.save(wbs)
+    win.geometry(str(e2.get())+"x"+str(e3.get())+"+"+str(pst_x-240)+"+"+str(pst_y-113))
+    e4.delete(0,END)
+    e5.delete(0,END)
+    e4.insert(0,pst_x-240)
+    e5.insert(0,pst_y-113)
+    
+def files_choose():
+    file_name1 = filedialog.askopenfilename(initialdir='path', title='select file',
+                                            filetypes=(('jpg files','*.jpg'),('all files', '*.*')))
+    global files
+    files=file_name1
+    if files == '':
+                messagebox.showwarning("경고", "파일을 추가 하세요")
+    sm_atte_file_entry.delete(0.0, END)
+    sm_atte_file_entry.insert(INSERT, files) 
+    
+    
+def send_mail_button():
+        
+    try:
+        # 세션 생성
+        s = smtplib.SMTP('smtp.gmail.com', 587)
+
+        # TLS 보안 시작
+        s.starttls()
+
+        # 로그인 인증
+        s.login(gmail_ID, gmail_SN)
+
+        # 보낼 메시지 설정
+        msg = MIMEMultipart()
+        msg['Subject'] = Header(s=sm_subject_en.get(), charset='utf-8') 
+        msg['From'] = gmail_ID #'보내는사람메일'
+        msg['To'] = sm_rece_person_en.get() #"받는사람메일"
+        
+        msg.attach(MIMEText(sm_cotents_en.get(), _charset='utf-8')) #1.0, "end-1c"
+        
+        
+        f = files
+
+        if f =='':
+            pass
+        else:
+            fil = open(f, "rb")
+
+            part = MIMEApplication(
+            fil.read(),
+            Name=basename(f)
+            )
+            encode_base64(part)
+            # After the file is closed
+            part['Content-Disposition'] = 'attachment; filename="%s"' % basename(f)
+            msg.attach(part)
+    
+        # 메일 보내기
+        s.sendmail(gmail_ID, sm_rece_person_en.get(), msg.as_string())
+
+        # 세션 종료
+        s.quit()
+        return True
+    
+    except Exception as e:
+        print(e)
+        return False
+    
+
+def files_delete():
+    global files
+    files =''
+    sm_atte_file_entry.delete(0.0, END)
+
+def send_mail_log():
+    receive_person_Mail=sm_rece_person_en.get() 
+    Suject_en=sm_subject_en.get()    
+    Contents_en=sm_cotents_en.get()
+    
+    time1=time.time()
+    send_mail_button()
+    result = send_mail_button()
+    
+    time2=time.time()
+    time3=time2-time1
+    print(time3)
+    
+    dt=datetime.now()
+    
+    if result:
+        email_sf = '성공'
+        email_dt = dt.strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        email_sf = '실패'
+        email_dt = dt.strftime("%Y-%m-%d %H:%M:%S")
+    
+    sheet_mail_log.append([receive_person_Mail, Suject_en,Contents_en,files,email_sf,email_dt])
+    print(sheet_mail_log)
+    wb.save(wbs)
+
+def Bfiles_choose():
+    file_name1 = filedialog.askopenfilename(initialdir='path', title='select file',
+                                            filetypes=(('xlsx files','*.xlsx'),('all files', '*.*')))
+    global files1
+    files1=file_name1
+    if files1 == '':
+                messagebox.showwarning("경고", "파일을 추가 하세요")
+    bsm_atte_file_entry.delete(0.0, END)
+    bsm_atte_file_entry.insert(INSERT, files1) 
+
+def Bfiles_delete():
+    global files1
+    files1 =''
+    bsm_atte_file_entry.delete(0.0, END) # 첨부파일
+    bsm_e2.delete(0,END) # 총메일수
+    bsm_e3.delete(0,END) # 처리메일수
+    bsm_e4.delete(0,END) # 성공메일수
+    bsm_e5.delete(0,END) # 실패메일수
+
+def many_mail_sending_1(data):
+    
+    _mail_adress2 = data[0]
+    _subject2 = data[1]
+    _contents2 = data[2]
+    _files = data[3]
+    
+    try:
+        # 세션 생성
+        s = smtplib.SMTP('smtp.gmail.com', 587)
+
+        # TLS 보안 시작
+        s.starttls()
+
+        # 로그인 인증
+        s.login(gmail_ID, gmail_SN)
+
+        # 보낼 메시지 설정
+        msg = MIMEMultipart()
+        msg['Subject'] = Header(s=_subject2, charset='utf-8')
+        msg['From'] = gmail_ID #'보내는사람메일'
+        msg['To'] = _mail_adress2 #"받는사람메일"
+        
+        msg.attach(MIMEText(_contents2, _charset='utf-8')) #1.0, "end-1c"
+
+        f = _files
+        
+        print(f) 
+            
+        if f == None:
+            pass
+        else:
+            fil = open(f, "rb")
+
+            part = MIMEApplication(
+            fil.read(),
+            Name=basename(f)
+            )
+            encode_base64(part)
+            # After the file is closed
+            part['Content-Disposition'] = 'attachment; filename="%s"' % basename(f)
+            msg.attach(part)
+
+        # 메일 보내기
+        s.sendmail(gmail_ID, _mail_adress2, msg.as_string())
+
+        # 세션 종료
+        s.quit()
+        return True
+
+    except Exception as e:
+        print(e)
+        return False
+
+def many_mail_sending(): 
+    
+    wb = load_workbook(files1)
+    ws1 = wb.active
+    
+    email_sucess_num=0
+    email_fail_num=0
+    
+    for row in ws1.rows:
+        rownum = row[0].row
+        if rownum == 1:
+            continue
+        data = (row[0].value, row[1].value, row[2].value, row[3].value)
+        
+        if row[4].value == "성공":
+            continue
+        
+        print("email sending --> ", row[0].value, row[1].value)
+        result = many_mail_sending_1(data)
+        
+        dt=datetime.now()
+        print(rownum,result)
+        email_process_num=rownum-1
+        bsm_e3.delete(0,END)
+        bsm_e3.insert(0,email_process_num)
+        bsm_e3.update()
+            
+                
+        if result:
+            ws1['E'+str(rownum)] = '성공'
+            ws1['F'+str(rownum)] = dt.strftime("%Y-%m-%d %H:%M:%S")
+            email_sucess_num+=1
+        else:
+            ws1['E'+str(rownum)] = '실패'
+            ws1['F'+str(rownum)] = dt.strftime("%Y-%m-%d %H:%M:%S")
+            email_fail_num+=1
+    
+        print(email_sucess_num)
+        
+        bsm_e4.delete(0,END)
+        bsm_e4.insert(0,email_sucess_num)
+        bsm_e4.update()
+
+        print(email_fail_num)
+        
+        bsm_e5.delete(0,END)
+        bsm_e5.insert(0,email_fail_num)    
+        bsm_e5.update()
+    
+            
+    wb.save(files1)     
+        
+    
+def send_mail_check():
+    wb = load_workbook(files1)
+    ws1 = wb.active
+    email_nums=ws1.max_row-1
+    bsm_e2.delete(0,END)
+    bsm_e2.insert(0,email_nums)
+    wb.save(files1)
+
+
+def Bfiles_form():
+    wbc = xl.Workbook()
+    ws = wbc.active
+    ws['a1'] = '받는사람메일'
+    ws['b1'] = '제목'
+    ws['c1'] = '내용'
+    ws['d1'] = '첨부파일'
+    ws['e1'] = '발송여부' 
+    ws['f1'] = '발송시간'
+    new_filesname='email_form.xlsx'
+    wbc.save(new_filesname)
+    messagebox.showinfo("생성했습니다.","email_gui 있는 폴더를 확인해 보세요")
+
+
+win = Tk()
+text= Text(win,wrap=WORD)
+
+win.geometry(str(sz_x)+"x"+str(sz_y)+"+"+str(pst_x)+"+"+str(pst_y)) #340x250+3480+30
+win.title('auto_mail')
+tabControl = Notebook(win)
+tab1 = Frame(tabControl)
+tab2 = Frame(tabControl)
+tab3 = Frame(tabControl)
+
+tabControl.add(tab1, text='TAB 1')
+tabControl.add(tab2, text='TAB 2')
+tabControl.add(tab3, text='TAB 3')
+tabControl.pack(expand=1, fill="both")
+
+#tab1
+
+send_mail=LabelFrame(tab1, text='메일보내기')
+send_mail.grid(column=0, row=0, padx=8, pady=4)
+
+sm_rece_person=Label(send_mail, text="받는 사람 :",width=10).grid(column=0, row=0,sticky='W')
+sm_rece_person_en=Entry(send_mail,width=30)
+sm_rece_person_en.grid(column=1, row=0,sticky='W')
+
+sm_subject=Label(send_mail, text="제목 :",width=10,height=2).grid(column=0, row=1, sticky='E')
+
+subjet_num_1 = subjet_num + 9
+contents_num_1 = contents_num + 9
+
+mail_sub=[]
+for i in range(9,subjet_num_1):
+    mail_sub.append(sheet.cell(i,1).value)
+    
+mail_con=[]
+for i in range(9,contents_num_1):
+    mail_con.append(sheet.cell(i,2).value)
+
+sm_subject_en=ttk.Combobox(send_mail, width=30)
+sm_subject_en['values'] = mail_sub
+sm_subject_en.grid(column=1, row=1,sticky='W')
+sm_subject_en.current(0)
+
+sm_contents=Label(send_mail, text="내용 :",width=10).grid(column=0, row=2, sticky='E')
+
+sm_cotents_en=ttk.Combobox(send_mail, width=30)
+sm_cotents_en['values'] = mail_con
+sm_cotents_en.grid(column=1, row=2,sticky='W')
+sm_cotents_en.current(0)
+
+
+sm_atte_file_button = Button(send_mail,text="첨부파일선택",width=13,command=files_choose).grid(column=1, row=3,pady=5,sticky='W')
+sm_atte_file_button_del = Button(send_mail,text="첨부파일삭제",width=13,command=files_delete).grid(column=1, row=3,pady=5,sticky='E')
+sm_atte_file_entry= Text(send_mail, height=2, width=30, wrap=WORD)
+sm_atte_file_entry.grid(column=1, row=4, sticky='W')
+
+sm_button = Button(tab1,text="보내기",width=15,command=send_mail_log).grid(column=0, row=1, padx=85,sticky='W')
+
+#tab2
+send_mail_big=LabelFrame(tab2, text='단체메일보내기')
+send_mail_big.grid(column=0, columnspan=3, row=0, padx=8, pady=4)
+
+bsm_atte_file_button = Button(send_mail_big,text="첨부파일선택",width=13,command=Bfiles_choose).grid(column=0, row=0,pady=5,sticky='W')
+bsm_atte_file_button_del = Button(send_mail_big,text="첨부파일삭제",width=13,command=Bfiles_delete).grid(column=1, row=0,pady=5,sticky='W')
+bsm_atte_file_form = Button(send_mail_big,text="첨부파일양식",width=13,command=Bfiles_form).grid(column=2, row=0,pady=5,sticky='W')
+
+bsm_atte_file_entry= Text(send_mail_big, height=2, width=45, wrap=WORD)
+bsm_atte_file_entry.grid(column=0, columnspan=3, row=1, sticky='W')
+
+lbbsm=Label(tab2, text="총 메일수 :",width=10).grid(column=0, row=1,sticky='E')
+bsm_e2=Entry(tab2,width=7)
+bsm_e2.grid(column=1, row=1,sticky='E')
+
+
+bsm_button0 = Button(tab2,text="확인",width=15,command=send_mail_check).grid(column=2, row=1, padx=10 ,sticky='E')
+
+lbbsm1=Label(tab2, text="처리 메일수 : ",width=10).grid(column=0, row=2,sticky='E')
+bsm_e3=Entry(tab2,width=7)
+bsm_e3.grid(column=1, row=2,sticky='E')
+
+
+bsm_button1 = Button(tab2,text="보내기",width=15,command=many_mail_sending).grid(column=2, row=2, padx=10 , pady=5, sticky='E')
+
+lbbsm2=Label(tab2, text="성공 메일수 : ",width=10).grid(column=0, row=3,sticky='E')
+bsm_e4=Entry(tab2,width=7)
+bsm_e4.grid(column=1, row=3,sticky='E')
+
+
+lbbsm3=Label(tab2, text="실패 메일수 : ",width=10).grid(column=0, row=4,sticky='E')
+bsm_e5=Entry(tab2,width=7)
+bsm_e5.grid(column=1, row=4,sticky='E')
+
+
+
+#tab3
+
+sipo_master=LabelFrame(tab3, text='size & position')
+sipo_master.grid(column=0, row=0, padx=8, pady=4)
+
+lbID=Label(sipo_master, text="사이즈:",width=7).grid(column=0, row=0,sticky='W')
+e2=Entry(sipo_master,width=7)
+e2.grid(column=1, row=0,sticky='W')
+e2.insert(0,sz_x)
+
+lbID2=Label(sipo_master, text="X",width=2).grid(column=2, row=0,sticky='W')
+e3=Entry(sipo_master,width=7)
+e3.grid(column=3, row=0,sticky='W')
+e3.insert(0,sz_y)
+
+lbID4=Label(sipo_master, text="",width=1).grid(column=4, row=0,sticky='W')
+b1 = Button(sipo_master,text="자동",width=8,command=auto_size).grid(column=5, row=0,sticky='W')
+b2 = Button(sipo_master,text="수동",width=8,command=manu_size).grid(column=6, row=0,sticky='W')
+
+lbID1=Label(sipo_master, text="위치:",width=7).grid(column=0, row=1,sticky='W')
+e4=Entry(sipo_master,width=7)
+e4.grid(column=1, row=1,sticky='W')
+e4.insert(0,pst_x)
+
+lbID3=Label(sipo_master, text="X",width=2).grid(column=2, row=1,sticky='W')
+e5=Entry(sipo_master,width=7)
+e5.grid(column=3, row=1,sticky='W')
+e5.insert(0,pst_y)
+
+lbID5=Label(sipo_master, text="",width=1).grid(column=4, row=1,sticky='W')
+b3 = Button(sipo_master,text="자동",width=8,command=auto_position).grid(column=5, row=1,sticky='W')
+b4 = Button(sipo_master,text="수동",width=8,command=manu_position).grid(column=6, row=1,sticky='W')
+
+win.mainloop()
+        </pre>
+    </div>    
+    <div id="link">
+      <a href="https://www.sscoaching.co.kr/ssc/index.coach" target="_blank"><img src="상상코칭.png"></a>
+      <a href="https://wawacenter.com/" target="_blank"><img src="와와.png"></a>
+      <a href="https://www.plcenter.co.kr/" target="_blank"><img src="파워잉글리시.JPG"></a>
+      <a href="http://www.sollute.co.kr/jsp/main.jsp" target="_blank"><img src="솔루트.png"></a>
+    </div>
+</div>
 </body>
 </html>
