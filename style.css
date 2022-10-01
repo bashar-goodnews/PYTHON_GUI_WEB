@@ -21,6 +21,10 @@ margin: 0;
 padding: 20px;
 }
 
+img {
+  border: 1px solid rgb(20, 2, 2);
+}
+
 #grid{
 display: grid;
 grid-template-columns: 300px 1fr 300px ; 
