@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Disallow: /private/
+Sitemap: https://bashar-goodnews.github.io/PYTHON_GUI_WEB/sitemap.xml
